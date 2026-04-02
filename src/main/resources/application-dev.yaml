@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: empleados-app
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/employees
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: benjamin
+    password: cdas9238rncdsa!
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
