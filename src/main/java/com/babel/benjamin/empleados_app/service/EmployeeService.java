@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface EmployeeService {
     EmployeeResponse getEmployees();
     void saveEmployees(List<EmployeeRequest> employeeList);
+    void deleteEmployeeById(int id);
+    EmployeeResponse getEmployees(int id);
 }

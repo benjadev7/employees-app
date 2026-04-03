@@ -7,6 +7,7 @@ import com.babel.benjamin.empleados_app.model.Employee;
 import com.babel.benjamin.empleados_app.service.EmployeeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +44,8 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/employees/{id}")
-    public ResponseEntity<?> getEmployeeById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok("implementacion de getEmployee por id");
+    public ResponseEntity<?> getEmployeeById(@PathVariable("id") @NotNull Integer id) {
+        return ResponseEntity.ok(employeeService.getEmployees(id));
     }
 
     /**
@@ -58,8 +59,6 @@ public class EmployeeController {
             @NotEmpty(message = Constants.MSG_LIST_EMPLOYEE_EMPTY)
             @Size(max = 10)
             @Valid List<EmployeeRequest> employeesRequests) {
-        employeesRequests.forEach(c -> log.info("empleado: {}", c));
-
         employeeService.saveEmployees(employeesRequests);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("datos creados");
@@ -72,7 +71,7 @@ public class EmployeeController {
      */
     @PutMapping("/employee/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok("implementacion de actualizacion de empleado");
+        return ResponseEntity.ok(employeeService.getEmployees(id));
     }
 
     /**
@@ -82,7 +81,9 @@ public class EmployeeController {
      */
     @DeleteMapping("/employee/{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok("implementacion de actualizacion de empleado");
+        employeeService.deleteEmployeeById(id);
+
+        return ResponseEntity.ok().build();
     }
 
 }

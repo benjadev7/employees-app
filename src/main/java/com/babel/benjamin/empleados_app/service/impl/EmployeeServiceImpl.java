@@ -2,6 +2,7 @@ package com.babel.benjamin.empleados_app.service.impl;
 
 import com.babel.benjamin.empleados_app.dto.request.EmployeeRequest;
 import com.babel.benjamin.empleados_app.dto.response.EmployeeResponse;
+import com.babel.benjamin.empleados_app.exception.EmployeeIdNotFoundException;
 import com.babel.benjamin.empleados_app.model.Employee;
 import com.babel.benjamin.empleados_app.repository.EmployeeRepository;
 import com.babel.benjamin.empleados_app.service.EmployeeService;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -16,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -50,5 +53,29 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .toList();
 
         employeeRepository.saveAll(employeeModelList);
+    }
+
+    @Override
+    public void deleteEmployeeById(int id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+
+        employee.ifPresentOrElse(employeeRepository::delete, () -> {
+            throw new EmployeeIdNotFoundException(id);
+        });
+    }
+
+    @Override
+    public EmployeeResponse getEmployees(int id) {
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+
+        if (employeeOptional.isPresent()) {
+            return EmployeeResponse
+                    .builder()
+                    .employees(List.of(employeeOptional.get()))
+                    .build();
+        } else {
+            throw new EmployeeIdNotFoundException(id);
+        }
+
     }
 }
