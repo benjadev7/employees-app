@@ -1,21 +1,32 @@
 package com.babel.benjamin.empleados_app.controller;
 
+import com.babel.benjamin.empleados_app.config.AppProps;
+import com.babel.benjamin.empleados_app.config.Constants;
+import com.babel.benjamin.empleados_app.dto.request.EmployeeRequest;
 import com.babel.benjamin.empleados_app.model.Employee;
 import com.babel.benjamin.empleados_app.service.EmployeeService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
+    private final AppProps appProps;
 
     /**
      * devuelve el listado de todos los empleados registrados
@@ -42,8 +53,16 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/employees")
-    public ResponseEntity<?> crearEmpleado(@RequestBody String empleado) {
-        return ResponseEntity.ok("implementacion de creación de empleado");
+    public ResponseEntity<?> createEmployee(
+            @RequestBody
+            @NotEmpty(message = Constants.MSG_LIST_EMPLOYEE_EMPTY)
+            @Size(max = 10)
+            @Valid List<EmployeeRequest> employeesRequests) {
+        employeesRequests.forEach(c -> log.info("empleado: {}", c));
+
+        employeeService.saveEmployees(employeesRequests);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("datos creados");
     }
 
     /**

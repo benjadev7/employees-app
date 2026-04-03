@@ -12,3 +12,12 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
+
+logging:
+  level:
+    root: info
+
+
+app:
+  empleadosapp:
+    msg_error: employees list can't be empty!
