@@ -2,21 +2,18 @@ package com.babel.benjamin.empleados_app.service.impl;
 
 import com.babel.benjamin.empleados_app.dto.request.EmployeeRequest;
 import com.babel.benjamin.empleados_app.dto.response.EmployeeResponse;
+import com.babel.benjamin.empleados_app.dto.response.EmployeesResponse;
 import com.babel.benjamin.empleados_app.exception.EmployeeIdNotFoundException;
 import com.babel.benjamin.empleados_app.model.Employee;
 import com.babel.benjamin.empleados_app.repository.EmployeeRepository;
 import com.babel.benjamin.empleados_app.service.EmployeeService;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +24,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public EmployeeResponse getEmployees() {
-        return new EmployeeResponse(employeeRepository.findAll(), Instant.now().toString());
+    public EmployeesResponse getEmployees() {
+        return new EmployeesResponse(employeeRepository.findAll(), Instant.now().toString());
     }
 
     @Override
@@ -65,17 +62,70 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponse getEmployees(int id) {
+    public EmployeesResponse getEmployees(int id) {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
 
         if (employeeOptional.isPresent()) {
-            return EmployeeResponse
+            return EmployeesResponse
                     .builder()
                     .employees(List.of(employeeOptional.get()))
+                    .timestamp(Instant.now().toString())
                     .build();
         } else {
             throw new EmployeeIdNotFoundException(id);
         }
 
+    }
+
+    @Override
+    public EmployeeResponse updateEmploye(int id, EmployeeRequest employeeRequest) {
+        employeeRequest.valid();
+
+        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        if (employeeOptional.isPresent()) {
+
+            Employee employee = employeeOptional.get();
+            employee.setName(employeeRequest.getName());
+            employee.setMiddleName(employeeRequest.getMiddleName());
+            employee.setFirstName(employeeRequest.getFirstName());
+            employee.setLastName(employeeRequest.getLastName());
+            employee.setAge(Integer.parseInt(employeeRequest.getAge()));
+            employee.setGender(Employee.Gender.valueOf(employeeRequest.getGender()));
+            employee.setBirthDate(LocalDate.parse(employeeRequest.getBirthDate(), formatter));
+            employee.setActive(employeeRequest.getActive());
+
+            employeeRepository.save(employee);
+
+
+            return EmployeeResponse
+                    .builder()
+                    .id(employee.getId())
+                    .name(employee.getName())
+                    .middleName(employee.getMiddleName())
+                    .firstName(employee.getFirstName())
+                    .lastName(employee.getLastName())
+                    .age(employee.getAge())
+                    .gender(employee.getGender())
+                    .birthDate(employee.getBirthDate())
+                    .position(employee.getPosition())
+                    .createdAt(employee.getCreatedAt())
+                    .active(employee.getActive())
+                    .build();
+        } else {
+            throw new EmployeeIdNotFoundException(id);
+        }
+    }
+
+    @Override
+    public EmployeesResponse findByName(String name) {
+        List<Employee>  employees = employeeRepository.findEmployeesByName(name);
+
+        return EmployeesResponse.builder()
+                .timestamp(Instant.now().toString())
+                .employees(employees)
+                .build();
     }
 }

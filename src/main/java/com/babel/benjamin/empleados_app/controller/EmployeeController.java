@@ -48,6 +48,14 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getEmployees(id));
     }
 
+
+    @GetMapping("/employees/search")
+    public ResponseEntity<?> getEmployeesByName(
+            @RequestParam("name") String name
+    ) {
+        return ResponseEntity.ok(employeeService.findByName(name));
+    }
+
     /**
      * permite insertar uno o varios empleados en una misma petición
      * @param empleado debe ser una lista
@@ -69,9 +77,12 @@ public class EmployeeController {
      * @param id
      * @return
      */
-    @PutMapping("/employee/{id}")
-    public ResponseEntity<?> updateEmployee(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(employeeService.getEmployees(id));
+    @PutMapping("/employees/{id}")
+    public ResponseEntity<?> updateEmployee(
+            @PathVariable("id") Integer id,
+            @RequestBody
+            @Valid EmployeeRequest employeeRequest) {
+        return ResponseEntity.ok(employeeService.updateEmploye(id, employeeRequest));
     }
 
     /**
@@ -79,7 +90,7 @@ public class EmployeeController {
      * @param id
      * @return
      */
-    @DeleteMapping("/employee/{id}")
+    @DeleteMapping("/employees/{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable("id") Integer id) {
         employeeService.deleteEmployeeById(id);
 
