@@ -3,20 +3,20 @@ version: '3'
 
 services:
 
-#  employee-app:
-#    build: .
-#    container_name: employee-app
-#    networks:
-#      - backend_network
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - employee-db
-#    environment:
-#      SPRING_PROFILES_ACTIVE: default
-#      URL_DB: jdbc:mysql://employee-db:3306/employees
-#      USER_DB: ${BD_USERNAME}
-#      PASS_BD: ${BD_PASSWORD}
+  employee-app:
+    build: .
+    container_name: employee-app
+    networks:
+      - backend_network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - employee-db
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      URL_DB: jdbc:mysql://employee-db:3306/employees
+      USER_DB: ${BD_USERNAME}
+      PASS_BD: ${BD_PASSWORD}
 
   employee-db:
     image: mariadb:10.11

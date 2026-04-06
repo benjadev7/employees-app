@@ -20,6 +20,7 @@ logging:
     root: info
 
 
-app:
-  empleadosapp:
-    msg_error: employees list can't be empty!
+jwt:
+  secret-key: 0Uk4tgIWwpXKSB8VFTZ9qtVhTawFt5eOrQrOJEbvjdd3LYzRUPs49O0vdEeAP2RYlVCDd6zjBEpiX9HsQN0YFQ==
+  expiration-time-access-token: 600
+  expiration-time-refresh-token: 3600
