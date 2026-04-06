@@ -35,21 +35,6 @@ public class AuthController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    /*
-    @PostMapping("/login")
-    private ResponseEntity<?> login(
-            @RequestBody
-            @Valid LoginRequest loginRequest) {
-
-        log.info("aqui andamos llegandp");
-
-        AuthResponse response = authService.login(loginRequest);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-     */
-
     @PostMapping("/login")
     private ResponseEntity<?> login(
             @RequestBody
