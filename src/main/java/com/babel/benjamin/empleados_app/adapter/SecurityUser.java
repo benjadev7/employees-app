@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class SecurityUser implements UserDetails {
-    private User user;
+    private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
