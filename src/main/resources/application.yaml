@@ -1,3 +1,19 @@
 spring:
   application:
     name: empleados-app
+
+  datasource:
+    url: ${URL_DB}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${USER_DB}
+    password: ${PASS_BD}
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    root: info
+

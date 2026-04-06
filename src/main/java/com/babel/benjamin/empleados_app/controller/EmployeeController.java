@@ -1,25 +1,21 @@
 package com.babel.benjamin.empleados_app.controller;
 
-import com.babel.benjamin.empleados_app.config.AppProps;
 import com.babel.benjamin.empleados_app.config.Constants;
 import com.babel.benjamin.empleados_app.dto.request.EmployeeRequest;
-import com.babel.benjamin.empleados_app.model.Employee;
+import com.babel.benjamin.empleados_app.dto.response.ApiResponse;
 import com.babel.benjamin.empleados_app.service.EmployeeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -27,7 +23,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
-    private final AppProps appProps;
 
     /**
      * devuelve el listado de todos los empleados registrados
@@ -58,7 +53,7 @@ public class EmployeeController {
 
     /**
      * permite insertar uno o varios empleados en una misma petición
-     * @param empleado debe ser una lista
+     * @param employeesRequests debe ser una lista
      * @return
      */
     @PostMapping("/employees")
@@ -69,7 +64,12 @@ public class EmployeeController {
             @Valid List<EmployeeRequest> employeesRequests) {
         employeeService.saveEmployees(employeesRequests);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("datos creados");
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ApiResponse(HttpStatus.CREATED.value(),
+                        "Employees saved.",
+                        Instant.now().toString())
+                );
     }
 
     /**
